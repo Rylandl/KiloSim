@@ -1,0 +1,41 @@
+cmake_minimum_required(VERSION 3.10)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+# set the project name
+project(KiloSim)
+
+include_directories(
+        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/lib
+
+)
+
+# IF WINDOWS LINK TO SFML THROUGH STATIC LIBRARY
+if (WIN32)
+        include_directories(${PROJECT_SOURCE_DIR}/SFML/include)
+        link_directories(${PROJECT_SOURCE_DIR}/SFML/lib)
+endif (WIN32)
+
+file(GLOB ALL_SRCS
+        "${PROJECT_SOURCE_DIR}/include/*.h"
+        "${PROJECT_SOURCE_DIR}/include/*.hpp"
+        "${PROJECT_SOURCE_DIR}/src/*.cpp"
+        "${PROJECT_SOURCE_DIR}/src/*.c"
+        )
+
+add_executable(KiloSim ${ALL_SRCS})
+
+if (UNIX)
+        if (APPLE)
+                file(GLOB LIBRARIES "${PROJECT_SOURCE_DIR}/lib/SFML_dylib/*.dylib")
+                target_link_libraries(SLAMSim ${LIBRARIES})
+        else ()
+                file(GLOB LIBRARIES "${PROJECT_SOURCE_DIR}/lib/SFML_so/*.so")
+                target_link_libraries(SLAMSim ${LIBRARIES})
+        endif ()
+endif (UNIX)
